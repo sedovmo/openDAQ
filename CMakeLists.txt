@@ -148,6 +148,7 @@ option(OPENDAQ_DISABLE_DEBUG_POSTFIX "Disable debug ('-debug') postfix" OFF)
 option(OPENDAQ_DEBUG_WARNINGS_AS_ERRORS "Treat debug warnings as errors" OFF)
 option(OPENDAQ_RELEASE_WARNINGS_AS_ERRORS "Treat release warnings as errors" ON)
 option(OPENDAQ_USE_CCACHE "Use compiler cache driver if available" ON)
+option(OPENDAQ_PACKAGE_ENABLE "Enable package" ON)
 
 # Dependent options
 cmake_dependent_option(OPENDAQ_ENABLE_INTEGRATION_TESTS "Enable testing" ON "OPENDAQ_ENABLE_TESTS" OFF)
@@ -697,52 +698,54 @@ if (NOT BUILDING_AS_SUBMODULE)
     set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER ".CMakePredefinedTargets")
 endif()
 
-if (NOT WIN32)
-    set(INSTALLED_MODULES_DIR ${CMAKE_INSTALL_LIBDIR})
-else()
-    set(INSTALLED_MODULES_DIR ${CMAKE_INSTALL_BINDIR})
+if (OPENDAQ_PACKAGE_ENABLE)
+    if (NOT WIN32)
+        set(INSTALLED_MODULES_DIR ${CMAKE_INSTALL_LIBDIR})
+    else()
+        set(INSTALLED_MODULES_DIR ${CMAKE_INSTALL_BINDIR})
+    endif()
+
+    set(INSTALLED_CMAKE_CONFIG_DIR ${CMAKE_INSTALL_LIBDIR}/cmake)
+
+    include(CMakePackageConfigHelpers)
+    configure_package_config_file(
+        cmake/${SDK_NAME}Config.cmake.in ${SDK_NAME}Config.cmake
+        INSTALL_DESTINATION ${INSTALLED_CMAKE_CONFIG_DIR}/${SDK_TARGET_NAME}
+        PATH_VARS
+            CMAKE_INSTALL_DATAROOTDIR
+            INSTALLED_MODULES_DIR
+            INSTALLED_CMAKE_CONFIG_DIR
+        NO_SET_AND_CHECK_MACRO
+        NO_CHECK_REQUIRED_COMPONENTS_MACRO
+    )
+
+    write_basic_package_version_file(${SDK_NAME}ConfigVersion.cmake
+      VERSION ${OPENDAQ_PACKAGE_VERSION}
+      COMPATIBILITY ExactVersion )
+      
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${SDK_NAME}Config.cmake
+            DESTINATION ${INSTALLED_CMAKE_CONFIG_DIR}/${SDK_TARGET_NAME}
+            COMPONENT ${SDK_NAME}_Development
+    )
+      
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${SDK_NAME}ConfigVersion.cmake
+            DESTINATION ${INSTALLED_CMAKE_CONFIG_DIR}/${SDK_TARGET_NAME}
+            COMPONENT ${SDK_NAME}_Development
+    )
+
+    install(FILES cmake/${SDK_NAME}Utils.cmake
+            DESTINATION share/cmake
+            COMPONENT ${SDK_NAME}_Development
+    )
+
+    install(EXPORT ${SDK_NAME}
+            NAMESPACE ${SDK_TARGET_NAMESPACE}::
+            FILE ${SDK_NAME}.cmake
+            DESTINATION ${INSTALLED_CMAKE_CONFIG_DIR}/${SDK_TARGET_NAME}
+            COMPONENT ${SDK_NAME}_Development
+    )
+    
+    include(cmake/Packing.cmake)
 endif()
 
-set(INSTALLED_CMAKE_CONFIG_DIR ${CMAKE_INSTALL_LIBDIR}/cmake)
-
-include(CMakePackageConfigHelpers)
-configure_package_config_file(
-    cmake/${SDK_NAME}Config.cmake.in ${SDK_NAME}Config.cmake
-    INSTALL_DESTINATION ${INSTALLED_CMAKE_CONFIG_DIR}/${SDK_TARGET_NAME}
-    PATH_VARS
-        CMAKE_INSTALL_DATAROOTDIR
-        INSTALLED_MODULES_DIR
-        INSTALLED_CMAKE_CONFIG_DIR
-    NO_SET_AND_CHECK_MACRO
-    NO_CHECK_REQUIRED_COMPONENTS_MACRO
-)
-
-write_basic_package_version_file(${SDK_NAME}ConfigVersion.cmake
-  VERSION ${OPENDAQ_PACKAGE_VERSION}
-  COMPATIBILITY ExactVersion )
-  
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${SDK_NAME}Config.cmake
-        DESTINATION ${INSTALLED_CMAKE_CONFIG_DIR}/${SDK_TARGET_NAME}
-        COMPONENT ${SDK_NAME}_Development
-)
-  
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${SDK_NAME}ConfigVersion.cmake
-        DESTINATION ${INSTALLED_CMAKE_CONFIG_DIR}/${SDK_TARGET_NAME}
-        COMPONENT ${SDK_NAME}_Development
-)
-
-install(FILES cmake/${SDK_NAME}Utils.cmake
-        DESTINATION share/cmake
-        COMPONENT ${SDK_NAME}_Development
-)
-
-install(EXPORT ${SDK_NAME}
-        NAMESPACE ${SDK_TARGET_NAMESPACE}::
-        FILE ${SDK_NAME}.cmake
-        DESTINATION ${INSTALLED_CMAKE_CONFIG_DIR}/${SDK_TARGET_NAME}
-        COMPONENT ${SDK_NAME}_Development
-)
-
 set(OPENDAQ_CONFIGURED_ONCE TRUE CACHE INTERNAL "A flag showing that CMake has configured at least once.")
-
-include(cmake/Packing.cmake)
