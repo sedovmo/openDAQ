@@ -63,7 +63,9 @@ endif()
 include(CheckCompilerFlag)
 include(CheckLinkerFlag)
 include(CMakeDependentOption)
-include(GNUInstallDirs)
+if (OPENDAQ_PACKAGE_ENABLE)
+    include(GNUInstallDirs)
+endif()
 
 if (POLICY CMP0074)
     cmake_policy(SET CMP0074 NEW)
@@ -102,9 +104,11 @@ file(RELATIVE_PATH RPATH_DIR
     ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
 )
 
-# allow CMAKE_INSTALL_RPATH to be cleared from the command line
-if (NOT DEFINED CMAKE_INSTALL_RPATH)
-    set(CMAKE_INSTALL_RPATH ${LIB_LOAD_ORIGIN} ${LIB_LOAD_ORIGIN}/${RPATH_DIR})
+if (OPENDAQ_PACKAGE_ENABLE)
+    # allow CMAKE_INSTALL_RPATH to be cleared from the command line
+    if (NOT DEFINED CMAKE_INSTALL_RPATH)
+        set(CMAKE_INSTALL_RPATH ${LIB_LOAD_ORIGIN} ${LIB_LOAD_ORIGIN}/${RPATH_DIR})
+    endif()
 endif()
 
 if (NOT MSVC)
@@ -596,8 +600,10 @@ add_compile_definitions(BOOST_ALL_NO_LIB=1)
 set(RTGEN_NAMESPACE ${SDK_TARGET_NAMESPACE})
 include(RTGen)
 
-set(CMAKE_INSTALL_DEBUG_LIBRARIES ON)
-include(InstallRequiredSystemLibraries)
+if (OPENDAQ_PACKAGE_ENABLE)
+    set(CMAKE_INSTALL_DEBUG_LIBRARIES ON)
+    include(InstallRequiredSystemLibraries)
+endif()
 
 if (NOT WIN32)
     set(MONO_C mono)
@@ -699,6 +705,8 @@ if (NOT BUILDING_AS_SUBMODULE)
 endif()
 
 if (OPENDAQ_PACKAGE_ENABLE)
+    message(STATUS "Package enable")
+    
     if (NOT WIN32)
         set(INSTALLED_MODULES_DIR ${CMAKE_INSTALL_LIBDIR})
     else()
@@ -746,6 +754,8 @@ if (OPENDAQ_PACKAGE_ENABLE)
     )
     
     include(cmake/Packing.cmake)
+else()
+    message(STATUS "Package disable")
 endif()
 
 set(OPENDAQ_CONFIGURED_ONCE TRUE CACHE INTERNAL "A flag showing that CMake has configured at least once.")
