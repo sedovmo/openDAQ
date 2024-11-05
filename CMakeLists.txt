@@ -26,6 +26,8 @@ project(${SDK_NAME}
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake
 )
 
+add_definitions(-DFMT_HEADER_ONLY)
+
 get_filename_component(ROOT_DIR ${CMAKE_SOURCE_DIR} REALPATH)
 get_filename_component(PROJ_DIR ${PROJECT_SOURCE_DIR} REALPATH)
 
