@@ -152,7 +152,7 @@ option(OPENDAQ_DISABLE_DEBUG_POSTFIX "Disable debug ('-debug') postfix" OFF)
 option(OPENDAQ_DEBUG_WARNINGS_AS_ERRORS "Treat debug warnings as errors" OFF)
 option(OPENDAQ_RELEASE_WARNINGS_AS_ERRORS "Treat release warnings as errors" ON)
 option(OPENDAQ_USE_CCACHE "Use compiler cache driver if available" ON)
-option(OPENDAQ_PACKAGE_ENABLE "Enable package" ON)
+option(OPENDAQ_PACKAGE_ENABLE "Enable package" OFF)
 
 # Dependent options
 cmake_dependent_option(OPENDAQ_ENABLE_INTEGRATION_TESTS "Enable testing" ON "OPENDAQ_ENABLE_TESTS" OFF)
