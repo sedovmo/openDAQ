@@ -49,6 +49,8 @@ set(DELPHI_BINDINGS_SRC
     ${CMAKE_CURRENT_BINARY_DIR}/OpenDAQ.CoreTypes.Config.pas
 )
 
-install(FILES ${DELPHI_BINDINGS_SRC}
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/bindings/delphi
-)
+if (OPENDAQ_PACKAGE_ENABLE)
+    install(FILES ${DELPHI_BINDINGS_SRC}
+            DESTINATION ${CMAKE_INSTALL_PREFIX}/bindings/delphi
+    )
+endif()

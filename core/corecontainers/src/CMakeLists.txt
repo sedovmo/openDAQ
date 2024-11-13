@@ -41,7 +41,9 @@ target_sources(${MODULE_NAME} INTERFACE ${SRC_PublicHeaders}
                                         ${SRC_Cpp}
 )
 
-install(FILES ${SRC_PublicHeaders}
-        DESTINATION include/coretypes
-        COMPONENT ${SDK_NAME}_coretypes_Development
-)
+if (OPENDAQ_PACKAGE_ENABLE)
+    install(FILES ${SRC_PublicHeaders}
+            DESTINATION include/coretypes
+            COMPONENT ${SDK_NAME}_coretypes_Development
+    )
+endif()

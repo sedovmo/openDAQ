@@ -88,11 +88,13 @@ opendaq_add_library(${MAIN_TARGET} SHARED
         ${SRC_PublicHeaders}
 )
 
-foreach(DAQ_COMPONENT ${DAQ_COMPONENTS})
-    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${DAQ_COMPONENT}/bindings/"
-            DESTINATION bindings
-    )
-endforeach()
+if (OPENDAQ_PACKAGE_ENABLE)
+    foreach(DAQ_COMPONENT ${DAQ_COMPONENTS})
+        install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${DAQ_COMPONENT}/bindings/"
+                DESTINATION bindings
+        )
+    endforeach()
+endif()
 
 message(${PROJECT_NAME})
 

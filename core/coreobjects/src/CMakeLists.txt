@@ -371,19 +371,21 @@ set_target_properties(${LIB_NAME} PROPERTIES PUBLIC_HEADER "${SRC_PublicHeaders}
 opendaq_set_output_lib_name(${LIB_NAME} ${PROJECT_VERSION_MAJOR})
 create_version_header(${LIB_NAME} ONLY_RC)
 
-install(TARGETS ${LIB_NAME}
-        EXPORT ${SDK_NAME}
-        RUNTIME
-            DESTINATION ${CMAKE_INSTALL_BINDIR}
-            COMPONENT ${SDK_NAME}_${BASE_NAME}_Runtime
-        LIBRARY
-            DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            COMPONENT          ${SDK_NAME}_${BASE_NAME}_Runtime
-            NAMELINK_COMPONENT ${SDK_NAME}_${BASE_NAME}_Development
-        ARCHIVE
-            DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            COMPONENT ${SDK_NAME}_${BASE_NAME}_Development
-        PUBLIC_HEADER
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${BASE_NAME}
-            COMPONENT ${SDK_NAME}_${BASE_NAME}_Development
-)
+if (OPENDAQ_PACKAGE_ENABLE)
+    install(TARGETS ${LIB_NAME}
+            EXPORT ${SDK_NAME}
+            RUNTIME
+                DESTINATION ${CMAKE_INSTALL_BINDIR}
+                COMPONENT ${SDK_NAME}_${BASE_NAME}_Runtime
+            LIBRARY
+                DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                COMPONENT          ${SDK_NAME}_${BASE_NAME}_Runtime
+                NAMELINK_COMPONENT ${SDK_NAME}_${BASE_NAME}_Development
+            ARCHIVE
+                DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                COMPONENT ${SDK_NAME}_${BASE_NAME}_Development
+            PUBLIC_HEADER
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${BASE_NAME}
+                COMPONENT ${SDK_NAME}_${BASE_NAME}_Development
+    )
+endif()
