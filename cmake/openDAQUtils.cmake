@@ -11,23 +11,25 @@ function (opendaq_set_module_properties MODULE_NAME LIB_MAJOR_VERSION)
     )
     opendaq_set_output_lib_name(${MODULE_NAME} ${LIB_MAJOR_VERSION})
 
-    if (NOT ${OPENDAQ_SET_MODULE_PARAMS_SKIP_INSTALL})
-        install(TARGETS ${MODULE_NAME}
-                EXPORT ${SDK_NAME}
-                RUNTIME
-                    DESTINATION ${CMAKE_INSTALL_BINDIR}/modules
-                    COMPONENT ${SDK_NAME}_${MODULE_NAME}_Runtime
-                LIBRARY
-                    DESTINATION ${CMAKE_INSTALL_LIBDIR}/modules
-                    COMPONENT          ${SDK_NAME}_${MODULE_NAME}_Runtime
-                    NAMELINK_COMPONENT ${SDK_NAME}_${MODULE_NAME}_Development
-                ARCHIVE
-                    DESTINATION ${CMAKE_INSTALL_LIBDIR}/modules
-                    COMPONENT ${SDK_NAME}_${MODULE_NAME}_Development
-                PUBLIC_HEADER
-                    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${MODULE_NAME}
-                    COMPONENT ${SDK_NAME}_${MODULE_NAME}_Development
-        )
+    if (OPENDAQ_PACKAGE_ENABLE)
+        if (NOT ${OPENDAQ_SET_MODULE_PARAMS_SKIP_INSTALL})
+            install(TARGETS ${MODULE_NAME}
+                    EXPORT ${SDK_NAME}
+                    RUNTIME
+                        DESTINATION ${CMAKE_INSTALL_BINDIR}/modules
+                        COMPONENT ${SDK_NAME}_${MODULE_NAME}_Runtime
+                    LIBRARY
+                        DESTINATION ${CMAKE_INSTALL_LIBDIR}/modules
+                        COMPONENT          ${SDK_NAME}_${MODULE_NAME}_Runtime
+                        NAMELINK_COMPONENT ${SDK_NAME}_${MODULE_NAME}_Development
+                    ARCHIVE
+                        DESTINATION ${CMAKE_INSTALL_LIBDIR}/modules
+                        COMPONENT ${SDK_NAME}_${MODULE_NAME}_Development
+                    PUBLIC_HEADER
+                        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${MODULE_NAME}
+                        COMPONENT ${SDK_NAME}_${MODULE_NAME}_Development
+            )
+        endif()
     endif()
 endfunction()
 

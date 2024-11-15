@@ -61,27 +61,31 @@ function(opendaq_add_library LIB_BASE_NAME)
 
         opendaq_set_output_lib_name(${VARIANT_TARGET} ${PROJECT_VERSION_MAJOR})
 
-        install(TARGETS ${VARIANT_TARGET}
-            EXPORT ${SDK_NAME}
-            RUNTIME
-                DESTINATION ${CMAKE_INSTALL_BINDIR}
-                COMPONENT ${SDK_NAME}_${MAIN_TARGET}_Runtime
-            LIBRARY
-                DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                COMPONENT          ${SDK_NAME}_${MAIN_TARGET}_Runtime
-                NAMELINK_COMPONENT ${SDK_NAME}_${MAIN_TARGET}_Development
-            ARCHIVE
-                DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                COMPONENT ${SDK_NAME}_${MAIN_TARGET}_Development
-            PUBLIC_HEADER
-                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${MAIN_TARGET}
-                COMPONENT ${SDK_NAME}_${MAIN_TARGET}_Development
-        )
+        if (OPENDAQ_PACKAGE_ENABLE)
+            install(TARGETS ${VARIANT_TARGET}
+                EXPORT ${SDK_NAME}
+                RUNTIME
+                    DESTINATION ${CMAKE_INSTALL_BINDIR}
+                    COMPONENT ${SDK_NAME}_${MAIN_TARGET}_Runtime
+                LIBRARY
+                    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                    COMPONENT          ${SDK_NAME}_${MAIN_TARGET}_Runtime
+                    NAMELINK_COMPONENT ${SDK_NAME}_${MAIN_TARGET}_Development
+                ARCHIVE
+                    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                    COMPONENT ${SDK_NAME}_${MAIN_TARGET}_Development
+                PUBLIC_HEADER
+                    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${MAIN_TARGET}
+                    COMPONENT ${SDK_NAME}_${MAIN_TARGET}_Development
+            )
+        endif()
     endforeach()
 
-    install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bindings/"
-            DESTINATION bindings
-    )
+    if (OPENDAQ_PACKAGE_ENABLE)
+        install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bindings/"
+                DESTINATION bindings
+        )
+    endif()
 endfunction()
 
 function(opendaq_component_target_variant COMPONENT_NAME VARIANT_TYPE VARIANT_TARGET)
